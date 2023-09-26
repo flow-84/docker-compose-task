@@ -1,0 +1,31 @@
+version: '3'
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "db"
+    networks:
+      - "app_net"
+  db:
+    image: "mariadb:11.1.2"
+    environment:
+      MYSQL_ROOT_PASSWORD: "rootpassword"
+      MYSQL_DATABASE: "restaurants"
+      MYSQL_USER: "example-user"
+      MYSQL_PASSWORD: "my_cool_secret"
+    volumes:
+      - "db_data:/var/lib/mysql"
+    networks:
+      - "app_net"
+    
+      
+
+networks:
+  app_net:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local

@@ -1,19 +1,15 @@
-FROM node:18
-
-# Create app directory
+# Build stage
+FROM node:18 AS build
 WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Install app dependencies
 RUN npm install
-
-# Bundle app source 
 COPY . .
 
-# Expose port 3000
+# Production stage
+FROM node:18 AS production
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/package*.json ./
+RUN npm install --only=production
+COPY --from=build /usr/src/app ./
 EXPOSE 3000
-
-# Run app
 CMD [ "node", "app.js" ]
